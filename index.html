@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odo's Kitchen - Authentic Ghanaian Cuisine</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #e63946;
+            --secondary: #457b9d;
+            --light: #f1faee;
+            --dark: #1d3557;
+            --accent: #a8dadc;
+            --success: #2a9d8f;
+            --warning: #e9c46a;
+            --error: #e76f51;
+            --gh-red: #CF0921;
+            --gh-yellow: #FCD20F;
+            --gh-green: #006B3D;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--gh-green);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gh-yellow);
+            font-family: 'Arial Black', sans-serif;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            padding: 0.5rem;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        nav a:hover {
+            color: var(--gh-yellow);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3');
+            background-size: cover;
+            background-position: center;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        /* Booking Widget */
+        .booking-widget {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 85%;
+            max-width: 650px;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(69, 123, 157, 0.2);
+        }
+        
+        button {
+            background-color: var(--gh-red);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #a0061a;
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #confirmation {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--gh-green);
+            color: white;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        #availability-message {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            min-height: 1.2rem;
+        }
+        
+        .available {
+            color: var(--success);
+        }
+        
+        .unavailable {
+            color: var(--error);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--gh-red);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Menu Section - Enhanced Styles */
+        .menu-category {
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--gh-red);
+            transition: transform 0.3s;
+        }
+
+        .menu-category:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-category h3 {
+            color: var(--gh-green);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px dashed var(--gh-yellow);
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-category h3::before {
+            content: "🍴";
+            margin-right: 0.5rem;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            transition: all 0.3s;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(207, 9, 33, 0.05);
+        }
+
+        .menu-item-name {
+            font-weight: 700;
+            color: var(--gh-green);
+            font-size: 1.1rem;
+        }
+
+        .menu-item-price {
+            color: var(--gh-red);
+            font-weight: bold;
+            background: rgba(207, 9, 33, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .menu-item-price::before {
+            content: "GHS ";
+        }
+
+        .menu-item-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .menu-item-badge {
+            display: inline-block;
+            background: var(--gh-yellow);
+            color: var(--gh-green);
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Contact Section */
+        #contact {
+            background: linear-gradient(rgba(0,107,61,0.9), rgba(0,107,61,0.9)), url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?ixlib=rb-4.0.3');
+            background-size: cover;
+            color: white;
+        }
+
+        #contact .section-title {
+            color: var(--gh-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .booking-widget {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            header {
+                flex-direction: column;
+            }
+            
+            nav {
+                margin-top: 1rem;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Odo's Kitchen</div>
+        <nav>
+            <a href="#menu">Menu</a>
+            <a href="#about">About</a>
+            <a href="#reservations">Reservations</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+    
+    <!-- Hero Section with Booking Widget -->
+    <section class="hero">
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Authentic Ghanaian Dining</h1>
+        <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem;">Experience the rich flavors of Ghana in the heart of Cape Coast</p>
+        
+        <div class="booking-widget">
+            <h2 style="margin-top: 0;">Make a Reservation</h2>
+            <form id="reservationForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Time</label>
+                    <select id="time" required>
+                        <option value="">Select Time</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:30">12:30 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="17:30">5:30 PM</option>
+                        <option value="19:00">7:00 PM</option>
+                        <option value="20:30">8:30 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="guests">Number of Guests</label>
+                    <select id="guests" required>
+                        <option value="">Select...</option>
+                        <option value="1">1 Person</option>
+                        <option value="2">2 People</option>
+                        <option value="3">3 People</option>
+                        <option value="4">4 People</option>
+                        <option value="5">5 People</option>
+                        <option value="6">6 People</option>
+                        <option value="7">7 People</option>
+                        <option value="8+">8+ People</option>
+                    </select>
+                    <div id="availability-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="requests">Special Requests</label>
+                    <textarea id="requests" rows="3" placeholder="Dietary restrictions, celebrations, etc."></textarea>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span id="buttonText">Book Table</span>
+                    <span id="buttonSpinner" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+            <div id="confirmation"></div>
+        </div>
+    </section>
+
+    <!-- Enhanced Menu Section -->
+    <section id="menu">
+        <h2 class="section-title">Our Menu</h2>
+        
+        <div class="menu-category">
+            <h3>Starters & Snacks</h3>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Kelewele <span class="menu-item-badge">Spicy!</span></div>
+                    <div class="menu-item-desc">Spicy fried plantains with ginger and pepper</div>
+                </div>
+                <div class="menu-item-price">25</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Tatale</div>
+                    <div class="menu-item-desc">Plantain pancakes with spicy pepper sauce</div>
+                </div>
+                <div class="menu-item-price">30</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Kofi Brokeman</div>
+                    <div class="menu-item-desc">Roasted plantain with groundnuts</div>
+                </div>
+                <div class="menu-item-price">20</div>
+            </div>
+        </div>
+        
+        <div class="menu-category">
+            <h3>Main Dishes</h3>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Fufu with Light Soup <span class="menu-item-badge">Popular!</span></div>
+                    <div class="menu-item-desc">Pounded cassava and plantain with aromatic fish or chicken soup</div>
+                </div>
+                <div class="menu-item-price">55</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Jollof Rice</div>
+                    <div class="menu-item-desc">The famous Ghanaian jollof with chicken or fish</div>
+                </div>
+                <div class="menu-item-price">60</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Banku with Tilapia</div>
+                    <div class="menu-item-desc">Fermented corn dough with grilled tilapia and pepper sauce</div>
+                </div>
+                <div class="menu-item-price">65</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Waakye</div>
+                    <div class="menu-item-desc">Rice and beans with spaghetti, garri, and stew</div>
+                </div>
+                <div class="menu-item-price">50</div>
+            </div>
+        </div>
+        
+        <div class="menu-category">
+            <h3>Soups & Stews</h3>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Palm Nut Soup</div>
+                    <div class="menu-item-desc">Rich palm nut soup with goat meat or fish</div>
+                </div>
+                <div class="menu-item-price">45</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Groundnut Soup</div>
+                    <div class="menu-item-desc">Peanut-based soup with chicken and mushrooms</div>
+                </div>
+                <div class="menu-item-price">40</div>
+            </div>
+        </div>
+        
+        <div class="menu-category">
+            <h3>Drinks & Desserts</h3>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Asaana</div>
+                    <div class="menu-item-desc">Traditional fermented corn drink</div>
+                </div>
+                <div class="menu-item-price">15</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Bofrot <span class="menu-item-badge">Sweet!</span></div>
+                    <div class="menu-item-desc">Ghanaian doughnuts</div>
+                </div>
+                <div class="menu-item-price">10</div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <div class="menu-item-name">Fresh Coconut</div>
+                    <div class="menu-item-desc">Chilled coconut with natural juice</div>
+                </div>
+                <div class="menu-item-price">12</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" style="background-color: #f5f5f5;">
+        <h2 class="section-title">Our Story</h2>
+        <p>Founded in 2015 by Chef Odo Mensah, Odo's Kitchen brings authentic Ghanaian culinary traditions to Cape Coast. Our ingredients are sourced daily from local markets and farms, ensuring the freshest flavors in every dish.</p>
+        <p>We take pride in preparing meals the traditional way, using recipes passed down through generations. Our restaurant overlooks the beautiful Cape Coast shoreline, providing a perfect dining atmosphere.</p>
+    </section>
+    
+    <!-- Reservations Section with Duplicate Booking Form -->
+    <section id="reservations">
+        <h2 class="section-title">Reservations</h2>
+        <p>Book your table to experience authentic Ghanaian cuisine. We accept reservations up to 30 days in advance. For parties of 8 or more, please call us directly.</p>
+        
+        <div class="booking-widget" style="margin: 2rem auto;">
+            <h2>Make a Reservation</h2>
+            <form id="reservationForm2">
+                <div class="form-group">
+                    <label for="name2">Full Name</label>
+                    <input type="text" id="name2" required>
+                </div>
+                <div class="form-group">
+                    <label for="email2">Email</label>
+                    <input type="email" id="email2" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone2">Phone Number</label>
+                    <input type="tel" id="phone2" required>
+                </div>
+                <div class="form-group">
+                    <label for="date2">Date</label>
+                    <input type="date" id="date2" required>
+                </div>
+                <div class="form-group">
+                    <label for="time2">Time</label>
+                    <select id="time2" required>
+                        <option value="">Select Time</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:30">12:30 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="17:30">5:30 PM</option>
+                        <option value="19:00">7:00 PM</option>
+                        <option value="20:30">8:30 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="guests2">Number of Guests</label>
+                    <select id="guests2" required>
+                        <option value="">Select...</option>
+                        <option value="1">1 Person</option>
+                        <option value="2">2 People</option>
+                        <option value="3">3 People</option>
+                        <option value="4">4 People</option>
+                        <option value="5">5 People</option>
+                        <option value="6">6 People</option>
+                        <option value="7">7 People</option>
+                        <option value="8+">8+ People</option>
+                    </select>
+                    <div id="availability-message2"></div>
+                </div>
+                <div class="form-group">
+                    <label for="requests2">Special Requests</label>
+                    <textarea id="requests2" rows="3" placeholder="Dietary restrictions, celebrations, etc."></textarea>
+                </div>
+                <button type="submit" id="submitBtn2">Book Table</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title">Visit Us</h2>
+        <p><strong>Location:</strong> 12 Castle Road, Cape Coast, Ghana</p>
+        <p><strong>Phone:</strong> +233 24 123 4567</p>
+        <p><strong>Email:</strong> reservations@odoskitchen.gh</p>
+        <p><strong>Hours:</strong> Monday-Sunday: 10am - 10pm</p>
+        
+        <div style="height: 300px; margin-top: 2rem; background: #eee; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+            [Map of Cape Coast location would go here]
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize both booking forms
+            initBookingForm('reservationForm', 'submitBtn', 'buttonText', 'buttonSpinner', 'availability-message');
+            initBookingForm('reservationForm2', 'submitBtn2', null, null, 'availability-message2');
+            
+            // Set minimum date to today for both date inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+            document.getElementById('date2').min = today;
+        });
+
+        function initBookingForm(formId, submitBtnId, buttonTextId, spinnerId, availabilityId) {
+            const form = document.getElementById(formId);
+            const confirmation = document.getElementById('confirmation');
+            const availabilityMessage = document.getElementById(availabilityId);
+            const timeSelect = document.getElementById(formId === 'reservationForm' ? 'time' : 'time2');
+            const submitBtn = document.getElementById(submitBtnId);
+            const buttonText = buttonTextId ? document.getElementById(buttonTextId) : null;
+            const buttonSpinner = spinnerId ? document.getElementById(spinnerId) : null;
+            const dateInput = document.getElementById(formId === 'reservationForm' ? 'date' : 'date2');
+            
+            // Disable weekends (Saturday:6, Sunday:0)
+            dateInput.addEventListener('input', function() {
+                const selectedDate = new Date(this.value);
+                if ([0, 6].includes(selectedDate.getDay())) {
+                    this.setCustomValidity('We are closed on weekends');
+                    availabilityMessage.textContent = 'We are closed on weekends';
+                    availabilityMessage.className = 'unavailable';
+                    if (submitBtn) submitBtn.disabled = true;
+                } else {
+                    this.setCustomValidity('');
+                    availabilityMessage.textContent = '';
+                    if (submitBtn) submitBtn.disabled = false;
+                }
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                if (buttonText) buttonText.textContent = 'Processing...';
+                if (buttonSpinner) buttonSpinner.style.display = 'inline-block';
+                if (submitBtn) submitBtn.disabled = true;
+                
+                // Get form values
+                const formData = {
+                    name: document.getElementById(formId === 'reservationForm' ? 'name' : 'name2').value,
+                    email: document.getElementById(formId === 'reservationForm' ? 'email' : 'email2').value,
+                    phone: document.getElementById(formId === 'reservationForm' ? 'phone' : 'phone2').value,
+                    date: document.getElementById(formId === 'reservationForm' ? 'date' : 'date2').value,
+                    time: document.getElementById(formId === 'reservationForm' ? 'time' : 'time2').value,
+                    guests: document.getElementById(formId === 'reservationForm' ? 'guests' : 'guests2').value,
+                    requests: document.getElementById(formId === 'reservationForm' ? 'requests' : 'requests2').value
+                };
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    // Show confirmation
+                    confirmation.innerHTML = `
+                        <h3 style="margin-top: 0;">Reservation Confirmed!</h3>
+                        <p><strong>Name:</strong> ${formData.name}</p>
+                        <p><strong>Date:</strong> ${new Date(formData.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <p><strong>Time:</strong> ${formData.time}</p>
+                        <p><strong>Guests:</strong> ${formData.guests}</p>
+                        <p>A confirmation has been sent to ${formData.email}</p>
+                    `;
+                    confirmation.style.display = 'block';
+                    
+                    // Reset form state
+                    if (buttonText) buttonText.textContent = 'Book Table';
+                    if (buttonSpinner) buttonSpinner.style.display = 'none';
+                    if (submitBtn) submitBtn.disabled = false;
+                    form.reset();
+                    
+                    // Scroll to confirmation
+                    confirmation.scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
